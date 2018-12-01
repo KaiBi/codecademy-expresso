@@ -1,5 +1,9 @@
 # Expresso
 
+## Introduction
+
+This is my solution of the capstone project from the `Build Web APIs From Scratch` course on [codecademy](https://codecademy.com).
+
 ## Project Overview
 
 In this capstone project, you will build all of the routing and database logic for an internal tool for a coffee shop called Expresso.
