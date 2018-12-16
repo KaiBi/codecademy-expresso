@@ -1,8 +1,8 @@
 FROM node:alpine
 LABEL maintainer="Kai Bizik"
-ENV PORT=4001
+ENV PORT=4000
 ENV NODE_ENV='production'
-EXPOSE 4001
+EXPOSE 4000
 
 WORKDIR /app
 COPY . /app/
