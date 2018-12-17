@@ -15,7 +15,7 @@ const db = new sqlite3.Database(dbPath);
 
 employeesRouter.param('employeeId', (req, res, next, employeeId) => {
 	const findEmployeeSql = 'SELECT * FROM Employee WHERE id = $employeeId';
-	const sqlParams = {$employeeId : employeeId};
+	const sqlParams = {$employeeId: employeeId};
 	db.get(findEmployeeSql, sqlParams, (error, employee) => {
 		if (error) {
 			next(error);
