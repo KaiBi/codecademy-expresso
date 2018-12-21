@@ -68,11 +68,12 @@ employeesRouter.post('/', (req, res, next) => {
 	if (!name || !position || !wage) {
 		return res.sendStatus(400);
 	}
-	const insertNewEmployeeSql = 'INSERT INTO Employee (name, position, wage'
-		+ (isCurrentEmployee > -1? ', is_current_employee' : '')
-		+ ') VALUES ($name, $position, $wage'
-		+ (isCurrentEmployee > -1? ', $isCurrentEmployee' : '')
-		+ ')';
+	const insertNewEmployeeSql = `
+		INSERT INTO Employee (name, position, wage
+		${isCurrentEmployee > -1? ', is_current_employee' : ''}
+		) VALUES ($name, $position, $wage
+		${isCurrentEmployee > -1? ', $isCurrentEmployee' : ''}
+		)`;
 	const values = {
 		$name: name,
 		$position: position,
@@ -83,9 +84,12 @@ employeesRouter.post('/', (req, res, next) => {
 		if (error) {
 			return next(error);
 		}
-		db.get(`SELECT * FROM Employee WHERE id = ${this.lastID}`, (error, employee) => {
-			res.status(201).json({employee});
-		});
+		db.get(
+			`SELECT * FROM Employee WHERE id = ${this.lastID}`,
+			(error, employee) => {
+				res.status(201).json({employee});
+			}
+		);
 	});
 });
 
@@ -131,14 +135,20 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
 
 
 employeesRouter.delete('/:employeeId', (req, res, next) => {
-	db.run(`UPDATE Employee SET is_current_employee = 0 WHERE id = ${req.params.employeeId}`, (error) => {
-		if (error) {
-			return next(error);
+	db.run(`
+		UPDATE Employee SET is_current_employee = 0 WHERE id = ${req.params.employeeId}`,
+		(error) => {
+			if (error) {
+				return next(error);
+			}
+			db.get(
+				`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`,
+				(error, employee) => {
+					res.status(200).json({employee});
+				}
+			);
 		}
-		db.get(`SELECT * FROM Employee WHERE id = ${req.params.employeeId}`, (error, employee) => {
-			res.status(200).json({employee});
-		});
-	});
+	);
 });
 
 
@@ -224,10 +234,13 @@ employeesRouter.put('/:employeeId/timesheets/:timesheetId', (req, res, next) => 
 
 
 employeesRouter.delete('/:employeeId/timesheets/:timesheetId', (req, res, next) => {
-	db.run(`DELETE FROM Timesheet WHERE id = ${req.params.timesheetId}`, (error) => {
-		if (error) {
-			return next(error);
+	db.run(
+		`DELETE FROM Timesheet WHERE id = ${req.params.timesheetId}`,
+		(error) => {
+			if (error) {
+				return next(error);
+			}
+			res.sendStatus(204);
 		}
-		res.sendStatus(204);
-	});
+	);
 });
